@@ -302,16 +302,59 @@ of the goal, the product (computer program, hand graph, computer graph,
 etc.), the data, and some interpretation. Reports must be reproducible
 and of high quality in terms of writing, grammar, presentation, etc.</p>
 </blockquote>
+<p>###In this portfolio, I will use the fish encounters data from tidyr
+##First, I need to understand the data set, what’s in it, what’s
+measured, what do we have, and then think about what can be done</p>
 <pre class="r"><code>library(tidyverse) 
 library(tidyr)
 data(fish_encounters)
+
 dim (fish_encounters)</code></pre>
 <pre><code>## [1] 114   3</code></pre>
 <pre class="r"><code>cat(&quot;Number of observations:&quot;, nrow(fish_encounters), &quot;\n&quot;)</code></pre>
 <pre><code>## Number of observations: 114</code></pre>
 <pre class="r"><code>cat(&quot;Number of variables:&quot;, ncol(fish_encounters), &quot;\n&quot;)</code></pre>
 <pre><code>## Number of variables: 3</code></pre>
-<pre class="r"><code>#there are 114 observations of 3 variables (fish, station, seen) in the dataset</code></pre>
+<pre class="r"><code>#there are 114 observations of 3 variables (fish (fish identifier), station (measurement station), seen(was the fish seen? 1 if yes)) in the dataset
+
+# Information about fish swimming down a river: each station represents an autonomous monitor that records if a tagged fish was seen at that location. Fish travel in one direction (migrating downstream). Information about misses is just as important as hits, but is not directly recorded in this form of the data.</code></pre>
+<p>#####I will first group the fish_encounters dataset by station to
+summarize the total number of encounters for each station. This allows
+us to compare the total fish encounters across different stations.</p>
+<pre class="r"><code>fish_encounters_summary &lt;- fish_encounters %&gt;%
+  group_by(station) %&gt;%
+  summarize(
+    count = n() # Count the number of entries for each station
+  ) %&gt;%
+  arrange(desc(count))  # Arrange in descending order by total encounters
+
+# View the summarized data
+head(fish_encounters_summary)</code></pre>
+<pre><code>## # A tibble: 6 × 2
+##   station count
+##   &lt;fct&gt;   &lt;int&gt;
+## 1 Release    19
+## 2 I80_1      19
+## 3 Lisbon     13
+## 4 Rstr       12
+## 5 Base_TD    11
+## 6 BCE         8</code></pre>
+<pre class="r"><code># how many stations in total 
+cat (&quot;Number of stations:&quot;, nrow(fish_encounters_summary),&quot;\n&quot;)</code></pre>
+<pre><code>## Number of stations: 11</code></pre>
+<pre class="r"><code># the average number of fish encountered across stations 
+average_fishencounter = nrow(fish_encounters)/nrow(fish_encounters_summary)
+cat (&quot;On average, there are&quot;, average_fishencounter, &quot;fish encountered across stations.&quot;)</code></pre>
+<pre><code>## On average, there are 10.36364 fish encountered across stations.</code></pre>
+<pre class="r"><code>## barchart 
+ggplot(data = fish_encounters, aes(x = station, y = seen)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(x = &quot;Station&quot;, y = &quot;Number of Fish Encounters&quot;)</code></pre>
+<p><img src="p01_files/figure-html/fishencounters%20by%20station-1.png" width="672" /></p>
+<pre class="r"><code>## there are 11 stations in the dataset. Release station and I80_1station enountered a total of 19 fish, which are the most. 
+## on average, each station encountered 10 fish. </code></pre>
+<div id="i-will-group-the-dataset-by-fish-id." class="section level2">
+<h2>I will group the dataset by fish id.</h2>
 <pre class="r"><code># Create a barplot of the number of fish encounters by species
 ggplot(data = fish_encounters, aes(x = station, y = seen)) +
   geom_bar(stat = &quot;identity&quot;) +
@@ -322,11 +365,7 @@ ggplot(data = fish_encounters, aes(x = station, y = seen)) +
   geom_bar(stat = &quot;identity&quot;) +
   labs(x = &quot;Species&quot;, y = &quot;Number of Fish Encounters&quot;)</code></pre>
 <p><img src="p01_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<pre class="r"><code># Create a barplot of the number of fish encounters by species
-ggplot(data = fish_encounters, aes(x = station, y = seen)) +
-  geom_bar(stat = &quot;identity&quot;) +
-  labs(x = &quot;Species&quot;, y = &quot;Number of Fish Encounters&quot;)</code></pre>
-<p><img src="p01_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
 
 
 

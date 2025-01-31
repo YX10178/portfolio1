@@ -4,25 +4,52 @@ title: "Portfolio 1"
 
 > The projects should be numbered consecutively (i.e., in the order in which you began them), and should include for each project a description of the goal, the product (computer program, hand graph, computer graph, etc.), the data, and some interpretation. Reports must be reproducible and of high quality in terms of writing, grammar, presentation, etc.
 
+###In this portfolio, I will use the fish encounters data from tidyr
+##First, I need to understand the data set, what's in it, what's measured, what do we have, and then think about what can be done
+
 ```{r load-packages, message=FALSE}
 library(tidyverse) 
 library(tidyr)
 data(fish_encounters)
+
 dim (fish_encounters)
 cat("Number of observations:", nrow(fish_encounters), "\n")
 cat("Number of variables:", ncol(fish_encounters), "\n")
-#there are 114 observations of 3 variables (fish, station, seen) in the dataset
+#there are 114 observations of 3 variables (fish (fish identifier), station (measurement station), seen(was the fish seen? 1 if yes)) in the dataset
+
+# Information about fish swimming down a river: each station represents an autonomous monitor that records if a tagged fish was seen at that location. Fish travel in one direction (migrating downstream). Information about misses is just as important as hits, but is not directly recorded in this form of the data.
+
 ```
 
-```{r}
-# Create a barplot of the number of fish encounters by species
+#####I will first group the fish_encounters dataset by station to summarize the total number of encounters for each station. This allows us to compare the total fish encounters across different stations.
+```{r fishencounters by station }
+fish_encounters_summary <- fish_encounters %>%
+  group_by(station) %>%
+  summarize(
+    count = n() # Count the number of entries for each station
+  ) %>%
+  arrange(desc(count))  # Arrange in descending order by total encounters
+
+# View the summarized data
+head(fish_encounters_summary)
+
+# how many stations in total 
+cat ("Number of stations:", nrow(fish_encounters_summary),"\n")
+
+# the average number of fish encountered across stations 
+average_fishencounter = nrow(fish_encounters)/nrow(fish_encounters_summary)
+cat ("On average, there are", average_fishencounter, "fish encountered across stations.")
+
+## barchart 
 ggplot(data = fish_encounters, aes(x = station, y = seen)) +
   geom_bar(stat = "identity") +
-  labs(x = "Species", y = "Number of Fish Encounters")
-  
+  labs(x = "Station", y = "Number of Fish Encounters")
+
+## there are 11 stations in the dataset. Release station and I80_1station enountered a total of 19 fish, which are the most. 
+## on average, each station encountered 10 fish. 
 ```
 
-
+## I will group the dataset by fish id.
 ```{r}
 # Create a barplot of the number of fish encounters by species
 ggplot(data = fish_encounters, aes(x = station, y = seen)) +
