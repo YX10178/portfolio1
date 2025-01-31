@@ -13,7 +13,7 @@
 
 <title>Portfolio 1</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -141,11 +141,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -174,8 +178,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -183,16 +187,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -306,7 +303,30 @@ etc.), the data, and some interpretation. Reports must be reproducible
 and of high quality in terms of writing, grammar, presentation, etc.</p>
 </blockquote>
 <pre class="r"><code>library(tidyverse) 
-library(datasauRus)</code></pre>
+library(tidyr)
+data(fish_encounters)
+dim (fish_encounters)</code></pre>
+<pre><code>## [1] 114   3</code></pre>
+<pre class="r"><code>cat(&quot;Number of observations:&quot;, nrow(fish_encounters), &quot;\n&quot;)</code></pre>
+<pre><code>## Number of observations: 114</code></pre>
+<pre class="r"><code>cat(&quot;Number of variables:&quot;, ncol(fish_encounters), &quot;\n&quot;)</code></pre>
+<pre><code>## Number of variables: 3</code></pre>
+<pre class="r"><code>#there are 114 observations of 3 variables (fish, station, seen) in the dataset</code></pre>
+<pre class="r"><code># Create a barplot of the number of fish encounters by species
+ggplot(data = fish_encounters, aes(x = station, y = seen)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(x = &quot;Species&quot;, y = &quot;Number of Fish Encounters&quot;)</code></pre>
+<p><img src="p01_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code># Create a barplot of the number of fish encounters by species
+ggplot(data = fish_encounters, aes(x = station, y = seen)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(x = &quot;Species&quot;, y = &quot;Number of Fish Encounters&quot;)</code></pre>
+<p><img src="p01_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code># Create a barplot of the number of fish encounters by species
+ggplot(data = fish_encounters, aes(x = station, y = seen)) +
+  geom_bar(stat = &quot;identity&quot;) +
+  labs(x = &quot;Species&quot;, y = &quot;Number of Fish Encounters&quot;)</code></pre>
+<p><img src="p01_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 
 
 
