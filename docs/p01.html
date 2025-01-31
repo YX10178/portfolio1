@@ -353,19 +353,34 @@ ggplot(data = fish_encounters, aes(x = station, y = seen)) +
 <p><img src="p01_files/figure-html/fishencounters%20by%20station-1.png" width="672" /></p>
 <pre class="r"><code>## there are 11 stations in the dataset. Release station and I80_1station enountered a total of 19 fish, which are the most. 
 ## on average, each station encountered 10 fish. </code></pre>
-<div id="i-will-group-the-dataset-by-fish-id." class="section level2">
-<h2>I will group the dataset by fish id.</h2>
-<pre class="r"><code># Create a barplot of the number of fish encounters by species
-ggplot(data = fish_encounters, aes(x = station, y = seen)) +
+<p>#####I will group the dataset by fish id.</p>
+<pre class="r"><code>fish_encounters_summary2 &lt;- fish_encounters %&gt;%
+  group_by(fish) %&gt;%
+  summarize(
+    count = n() # Count the number of entries for each station
+  ) %&gt;%
+  arrange(desc(count))  # Arrange in descending order by total encounters
+
+# View the summarized data
+head(fish_encounters_summary2)</code></pre>
+<pre><code>## # A tibble: 6 × 2
+##   fish  count
+##   &lt;fct&gt; &lt;int&gt;
+## 1 4842     11
+## 2 4843     11
+## 3 4844     11
+## 4 4858     11
+## 5 4861     11
+## 6 4857      9</code></pre>
+<pre class="r"><code># how many fish in total 
+cat (&quot;Number of fish:&quot;, nrow(fish_encounters_summary2),&quot;\n&quot;)</code></pre>
+<pre><code>## Number of fish: 19</code></pre>
+<pre class="r"><code>#barchart
+ggplot(data = fish_encounters, aes(x = fish, y = seen)) +
   geom_bar(stat = &quot;identity&quot;) +
   labs(x = &quot;Species&quot;, y = &quot;Number of Fish Encounters&quot;)</code></pre>
-<p><img src="p01_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<pre class="r"><code># Create a barplot of the number of fish encounters by species
-ggplot(data = fish_encounters, aes(x = station, y = seen)) +
-  geom_bar(stat = &quot;identity&quot;) +
-  labs(x = &quot;Species&quot;, y = &quot;Number of Fish Encounters&quot;)</code></pre>
-<p><img src="p01_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-</div>
+<p><img src="p01_files/figure-html/fishencounters%20by%20id-1.png" width="672" /></p>
+<pre class="r"><code>## There are 19 fish in the data set. Across all stations, five fish were encountered the most, 11 times each.</code></pre>
 
 
 

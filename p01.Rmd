@@ -49,20 +49,26 @@ ggplot(data = fish_encounters, aes(x = station, y = seen)) +
 ## on average, each station encountered 10 fish. 
 ```
 
-## I will group the dataset by fish id.
-```{r}
-# Create a barplot of the number of fish encounters by species
-ggplot(data = fish_encounters, aes(x = station, y = seen)) +
+#####I will group the dataset by fish id.
+```{r fishencounters by id }
+fish_encounters_summary2 <- fish_encounters %>%
+  group_by(fish) %>%
+  summarize(
+    count = n() # Count the number of entries for each station
+  ) %>%
+  arrange(desc(count))  # Arrange in descending order by total encounters
+
+# View the summarized data
+head(fish_encounters_summary2)
+
+# how many fish in total 
+cat ("Number of fish:", nrow(fish_encounters_summary2),"\n")
+
+#barchart
+ggplot(data = fish_encounters, aes(x = fish, y = seen)) +
   geom_bar(stat = "identity") +
   labs(x = "Species", y = "Number of Fish Encounters")
-  
+
+## There are 19 fish in the data set. Across all stations, five fish were encountered the most, 11 times each.
 ```
 
-
-```{r}
-# Create a barplot of the number of fish encounters by species
-ggplot(data = fish_encounters, aes(x = station, y = seen)) +
-  geom_bar(stat = "identity") +
-  labs(x = "Species", y = "Number of Fish Encounters")
-  
-```
